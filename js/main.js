@@ -16,7 +16,7 @@ class Seguro {
             precioTotal += 20; // Recargo para menores de 25 años
         } else if (this.edad > 65) {
             precioTotal += 30; // Recargo para mayores de 65 años
-        } else (precioTotal += 25);   
+        } else {precioTotal += 25};   
 
         // Ajustar precio base según el modelo del vehículo
         const recargosModelo = {
