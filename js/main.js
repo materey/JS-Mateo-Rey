@@ -55,7 +55,7 @@ function cotizarSeguro() {
 
         // Validar la entrada del usuario
         const modelosValidos = ['economico', 'sedan', 'suv', 'deportivo'];
-        if (isNaN(edad) || !modelosValidos.includes(modeloVehiculo) || (cobertura !== 'básica' && cobertura !== 'amplia')) {
+        if (isNaN(edad) || !modelosValidos.includes(modeloVehiculo) || (cobertura !== 'basica' && cobertura !== 'amplia')) {
             alert('Por favor, ingrese datos válidos.');
             continue;
         }
