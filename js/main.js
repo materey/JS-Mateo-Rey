@@ -41,7 +41,7 @@ class Seguro {
     }
 }
 
-// Manejar la lógica de cotización y la interacción con el DOM
+
 document.getElementById('cotizarBtn').addEventListener('click', function() {
     let edad = parseInt(document.getElementById('edad').value);
     let modeloVehiculo = document.getElementById('modeloVehiculo').value;
@@ -54,23 +54,23 @@ document.getElementById('cotizarBtn').addEventListener('click', function() {
         return;
     }
 
-    // Crear un nuevo objeto Seguro y calcular el precio
+
     let seguro = new Seguro(edad, modeloVehiculo, cobertura);
     let precioSeguro = seguro.calcularPrecio();
 
-    // Almacenar la cotización en el localStorage
+
     let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
     cotizaciones.push({ seguro, precioSeguro });
     localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
 
-    // Mostrar el precio del seguro al usuario
+
     let resultadosDiv = document.getElementById('resultados');
     let cotizacionDiv = document.createElement('div');
     cotizacionDiv.innerHTML = `Edad: ${seguro.edad}, Modelo del Vehículo: ${seguro.modeloVehiculo}, Cobertura: ${seguro.cobertura}, Precio: $${precioSeguro}`;
     resultadosDiv.appendChild(cotizacionDiv);
 });
 
-// Cargar cotizaciones previas al cargar la página
+
 document.addEventListener('DOMContentLoaded', function() {
     let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
     let resultadosDiv = document.getElementById('resultados');
