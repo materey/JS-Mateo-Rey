@@ -16,7 +16,7 @@ class Seguro {
             precioTotal += 20; // Recargo para menores de 25 años
         } else if (this.edad > 65) {
             precioTotal += 30; // Recargo para mayores de 65 años
-        } else {precioTotal += 25};   
+        }
 
         // Ajustar precio base según el modelo del vehículo
         const recargosModelo = {
@@ -41,45 +41,42 @@ class Seguro {
     }
 }
 
-// Función para interactuar con el usuario y mostrar el precio del seguro
-function cotizarSeguro() {
-    // Array para almacenar las cotizaciones
-    const cotizaciones = [];
+// Manejar la lógica de cotización y la interacción con el DOM
+document.getElementById('cotizarBtn').addEventListener('click', function() {
+    let edad = parseInt(document.getElementById('edad').value);
+    let modeloVehiculo = document.getElementById('modeloVehiculo').value;
+    let cobertura = document.getElementById('cobertura').value.toLowerCase();
 
-    let continuar = true;
-
-    while (continuar) {
-        let edad = parseInt(prompt('Ingrese su edad:'));
-        let modeloVehiculo = prompt('Ingrese el modelo de su vehículo (economico/sedan/suv/deportivo):').toLowerCase();
-        let cobertura = prompt('Ingrese el tipo de cobertura (basica/amplia):').toLowerCase();
-
-        // Validar la entrada del usuario
-        const modelosValidos = ['economico', 'sedan', 'suv', 'deportivo'];
-        if (isNaN(edad) || !modelosValidos.includes(modeloVehiculo) || (cobertura !== 'basica' && cobertura !== 'amplia')) {
-            alert('Por favor, ingrese datos válidos.');
-            continue;
-        }
-
-        // Crear un nuevo objeto Seguro y calcular el precio
-        let seguro = new Seguro(edad, modeloVehiculo, cobertura);
-        let precioSeguro = seguro.calcularPrecio();
-
-        // Almacenar la cotización en el array
-        cotizaciones.push({ seguro, precioSeguro });
-
-        // Mostrar el precio del seguro al usuario
-        alert('El precio de su seguro es: $' + precioSeguro);
-
-        // Preguntar al usuario si quiere realizar otra cotización
-        continuar = confirm('¿Desea realizar otra cotización?');
+    // Validar la entrada del usuario
+    const modelosValidos = ['economico', 'sedan', 'suv', 'deportivo'];
+    if (isNaN(edad) || !modelosValidos.includes(modeloVehiculo) || (cobertura !== 'basica' && cobertura !== 'amplia')) {
+        alert('Por favor, ingrese datos válidos.');
+        return;
     }
 
-    // Mostrar todas las cotizaciones realizadas
-    console.log('Cotizaciones realizadas:');
-    cotizaciones.forEach((cotizacion, index) => {
-        console.log(`Cotización ${index + 1}: Edad - ${cotizacion.seguro.edad}, Modelo del Vehículo - ${cotizacion.seguro.modeloVehiculo}, Cobertura - ${cotizacion.seguro.cobertura}, Precio - $${cotizacion.precioSeguro}`);
-    });
-}
+    // Crear un nuevo objeto Seguro y calcular el precio
+    let seguro = new Seguro(edad, modeloVehiculo, cobertura);
+    let precioSeguro = seguro.calcularPrecio();
 
-// Llamar a la función para cotizar el seguro
-cotizarSeguro();
+    // Almacenar la cotización en el localStorage
+    let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+    cotizaciones.push({ seguro, precioSeguro });
+    localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
+
+    // Mostrar el precio del seguro al usuario
+    let resultadosDiv = document.getElementById('resultados');
+    let cotizacionDiv = document.createElement('div');
+    cotizacionDiv.innerHTML = `Edad: ${seguro.edad}, Modelo del Vehículo: ${seguro.modeloVehiculo}, Cobertura: ${seguro.cobertura}, Precio: $${precioSeguro}`;
+    resultadosDiv.appendChild(cotizacionDiv);
+});
+
+// Cargar cotizaciones previas al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+    let resultadosDiv = document.getElementById('resultados');
+    cotizaciones.forEach(cotizacion => {
+        let cotizacionDiv = document.createElement('div');
+        cotizacionDiv.innerHTML = `Edad: ${cotizacion.seguro.edad}, Modelo del Vehículo: ${cotizacion.seguro.modeloVehiculo}, Cobertura: ${cotizacion.seguro.cobertura}, Precio: $${cotizacion.precioSeguro}`;
+        resultadosDiv.appendChild(cotizacionDiv);
+    });
+});

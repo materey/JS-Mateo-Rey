@@ -3,12 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preentrega 1</title>
+    <title>Cotizador de seguros</title>
 </head>
 <body>
-<h1>COTIZADOR DE SEGUROS</h1>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resultados {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cotizador de Seguros</h1>
+    <div class="form-group">
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad">
+    </div>
+    <div class="form-group">
+        <label for="modeloVehiculo">Modelo del Vehículo:</label>
+        <select id="modeloVehiculo">
+            <option value="economico">Economico</option>
+            <option value="sedan">Sedán</option>
+            <option value="suv">SUV</option>
+            <option value="deportivo">Deportivo</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="cobertura">Tipo de Cobertura:</label>
+        <select id="cobertura">
+            <option value="basica">Basica</option>
+            <option value="amplia">Amplia</option>
+        </select>
+    </div>
+    <button id="cotizarBtn">Cotizar Seguro</button>
+    <div id="resultados"></div>
 
-<h2>Complete los datos solicitados para poder realizar un analisis de su cobertura</h2>
 
 
     <script src="./js/main.js"></script>
