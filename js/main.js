@@ -1,13 +1,14 @@
 // Definir una clase para el Seguro
 class Seguro {
-    constructor(edad, modeloVehiculo, cobertura) {
+    constructor(edad, modeloVehiculo, cobertura, domicilio) {
         this.edad = edad;
         this.modeloVehiculo = modeloVehiculo;
         this.cobertura = cobertura;
+        this.domicilio = domicilio;
     }
 
     // Método para calcular el precio del seguro
-    calcularPrecio() {
+    calcularPrecio(recargosDomicilio) {
         let precioBase = 50; // Precio base del seguro
         let precioTotal = precioBase;
 
@@ -37,6 +38,10 @@ class Seguro {
             precioTotal += 30; // Recargo por cobertura básica
         }
 
+        if(recargosDomicilio[this.domicilio]) {
+            precioTotal += recargosDomicilio[this.domicilio];
+        }
+        
         return precioTotal;
     }
 }
@@ -46,37 +51,52 @@ document.getElementById('cotizarBtn').addEventListener('click', function() {
     let edad = parseInt(document.getElementById('edad').value);
     let modeloVehiculo = document.getElementById('modeloVehiculo').value;
     let cobertura = document.getElementById('cobertura').value.toLowerCase();
+    let domicilio = document.getElementById('domicilio').value;
 
-    // Validar la entrada del usuario
+
     const modelosValidos = ['economico', 'sedan', 'suv', 'deportivo'];
-    if (isNaN(edad) || !modelosValidos.includes(modeloVehiculo) || (cobertura !== 'basica' && cobertura !== 'amplia')) {
+    const zonasValidas = ['zonaOeste', 'zonaSur', 'zonaNorte', 'zonaEste'];
+    if (isNaN(edad) || !modelosValidos.includes(modeloVehiculo) || (cobertura !== 'basica' && cobertura !== 'amplia') || !zonasValidas.includes(domicilio)) {
         alert('Por favor, ingrese datos válidos.');
         return;
     }
 
+    fetch('data/zonas.json')
+        .then(response => response.json())
+        .then(recargosDomicilio => { 
+            let seguro = new Seguro(edad, modeloVehiculo, cobertura, domicilio);
+            let precioSeguro = seguro.calcularPrecio(recargosDomicilio);
 
-    let seguro = new Seguro(edad, modeloVehiculo, cobertura);
-    let precioSeguro = seguro.calcularPrecio();
+            let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+            cotizaciones.push({ seguro, precioSeguro });
+            localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
 
-
-    let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
-    cotizaciones.push({ seguro, precioSeguro });
-    localStorage.setItem('cotizaciones', JSON.stringify(cotizaciones));
-
-
-    let resultadosDiv = document.getElementById('resultados');
-    let cotizacionDiv = document.createElement('div');
-    cotizacionDiv.innerHTML = `Edad: ${seguro.edad}, Modelo del Vehículo: ${seguro.modeloVehiculo}, Cobertura: ${seguro.cobertura}, Precio: $${precioSeguro}`;
-    resultadosDiv.appendChild(cotizacionDiv);
+            mostrarCotizaciones([ { seguro, precioSeguro } ]);
+        })
+        .catch(error => console.error('Error al cargar recargos por zona:', error));
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
-    let resultadosDiv = document.getElementById('resultados');
-    cotizaciones.forEach(cotizacion => {
-        let cotizacionDiv = document.createElement('div');
-        cotizacionDiv.innerHTML = `Edad: ${cotizacion.seguro.edad}, Modelo del Vehículo: ${cotizacion.seguro.modeloVehiculo}, Cobertura: ${cotizacion.seguro.cobertura}, Precio: $${cotizacion.precioSeguro}`;
-        resultadosDiv.appendChild(cotizacionDiv);
-    });
-});
+        function mostrarCotizaciones(cotizaciones) {
+            let resultadosDiv = document.getElementById('resultados');
+            resultadosDiv.innerHTML = ''; 
+        
+            cotizaciones.forEach(cotizacion => {
+                let cotizacionDiv = document.createElement('div');
+                cotizacionDiv.innerHTML = `Edad: ${cotizacion.seguro.edad}, Modelo del Vehículo: ${cotizacion.seguro.modeloVehiculo}, Cobertura: ${cotizacion.seguro.cobertura}, Domicilio: ${cotizacion.seguro.domicilio}, Precio: $${cotizacion.precioSeguro}`;
+                resultadosDiv.appendChild(cotizacionDiv);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
+            
+        
+            
+            fetch('data/vehicles.json') 
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Datos cargados:', data);
+                })
+                .catch(error => console.error('Error al cargar datos:', error));
+        });

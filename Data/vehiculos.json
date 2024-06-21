@@ -1,0 +1,18 @@
+[
+    {
+        "modelo": "economico",
+        "recargo": 10
+    },
+    {
+        "modelo": "sedan",
+        "recargo": 20
+    },
+    {
+        "modelo": "suv",
+        "recargo": 30
+    },
+    {
+        "modelo": "deportivo",
+        "recargo": 50
+    }
+]
